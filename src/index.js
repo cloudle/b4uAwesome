@@ -33,6 +33,8 @@ class App extends Component {
 		super(props);
 		this.state = {
 			sidebarEnabled: false,
+			messages: [],
+			currentMessage: '',
 		};
 	}
 
@@ -45,7 +47,11 @@ class App extends Component {
 			<View style={{ width: 60, backgroundColor: '#261c25',}}></View>
 			<View style={{ width: 180, backgroundColor: '#4d384b' }}></View>
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
-				<View style={{ flex: 1, }}></View>
+				<View style={{ flex: 1, padding: 18, }}>
+					{this.state.messages.map((item, i) => {
+						return <Text key={i}>{item.content}</Text>
+					})}
+				</View>
 				<View style={{ padding: 8, borderTopWidth: 1, borderColor: '#dedede', }}>
 					<View
 						style={{
@@ -56,7 +62,20 @@ class App extends Component {
 						}}>
 						<View style={{ width: 30, borderColor: '#dedede', borderRightWidth: 1, }}></View>
 						<View style={{ flex: 1, }}>
-							<TextInput style={{ padding: 8, }}/>
+							<TextInput
+								style={{ padding: 8, }}
+								ref={instance => this.input = instance}
+								value={this.state.currentMessage}
+								onChangeText={(value) => { this.setState({ currentMessage: value }) }}
+								onKeyPress={({ nativeEvent }) => {
+									if (nativeEvent.key === 'Enter') {
+										const nextMessages = [...this.state.messages,
+											{ content: this.state.currentMessage }];
+
+										this.setState({ messages: nextMessages, currentMessage: '' });
+										setTimeout(() => { this.input.focus(); });
+									}
+								}}/>
 						</View>
 						<View style={{ width: 50, borderColor: '#dedede', borderLeftWidth: 1, }}></View>
 					</View>
