@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet, Platform } from 'react-native';
-import { utils, RuuiProvider, Button, Tooltip } from 'react-universal-ui';
+import { utils, RuuiProvider, Button, Input, Tooltip } from 'react-universal-ui';
 import { connect, Provider } from 'react-redux';
 
+import Avatar from './components/avatar';
+import Channel from './components/channel';
 import { store } from './store';
+import configs, { pi, name } from './const';
 import * as appActions from './store/action/app';
 
 const instructions = Platform.select({
@@ -35,18 +38,42 @@ class App extends Component {
 			sidebarEnabled: false,
 			messages: [],
 			currentMessage: '',
+			channels: [{ name: 'AI' }, { name: 'AB' }]
 		};
 	}
 
 	render() {
-		const textStyle = {
-			fontSize: 40, color: '#ffffff',
-		};
+		const { leftPaneWidth, themeColor, darken, lighten } = configs,
+			darkerBackground = darken(themeColor, 10);
 
 		return <View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'red', }}>
-			<View style={{ width: 60, backgroundColor: '#261c25',}}></View>
-			<View style={{ width: 180, backgroundColor: '#4d384b' }}></View>
-			<View style={{ flex: 1, backgroundColor: 'white' }}>
+			<View
+				style={{
+					width: 60,
+					paddingTop: 5,
+					backgroundColor: darkerBackground,
+					alignItems: 'center',
+				}}>
+				<View style={{ flex: 1 }}>
+					{this.state.channels.map((item, i) => {
+						return <Channel key={i} item={item}/>
+					})}
+				</View>
+				<Avatar/>
+			</View>
+			<View style={{ width: leftPaneWidth, backgroundColor: themeColor, }}>
+				{/*<Button*/}
+					{/*title="Hey" tooltip="asdadsadasd" tooltipDirection="bottom"*/}
+					{/*/>*/}
+				{/*<Input floatingLabel="asdasdsad"/>*/}
+				{/*<Input/>*/}
+				{/*<Input/>*/}
+			</View>
+			<View
+				style={{
+					flex: 1,
+					backgroundColor: 'white'
+				}}>
 				<View style={{ flex: 1, padding: 18, }}>
 					{this.state.messages.map((item, i) => {
 						return <Text key={i}>{item.content}</Text>
@@ -60,7 +87,8 @@ class App extends Component {
 							borderColor: '#dedede',
 							borderWidth: 1,
 						}}>
-						<View style={{ width: 30, borderColor: '#dedede', borderRightWidth: 1, }}></View>
+						<View style={{ width: 30, borderColor: '#dedede', borderRightWidth: 1, }}>
+						</View>
 						<View style={{ flex: 1, }}>
 							<TextInput
 								style={{ padding: 8, }}
